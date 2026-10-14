@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { ZodError } from 'zod';
+import multer from 'multer';
 
 export function errorHandler(
   err: any,
@@ -14,6 +15,24 @@ export function errorHandler(
       success: false,
       error: 'Validation Error',
       details: err.flatten()
+    });
+    return;
+  }
+
+  if (err instanceof multer.MulterError) {
+    res.status(400).json({
+      success: false,
+      error: `Upload Error: ${err.message}`,
+      code: err.code
+    });
+    return;
+  }
+
+  // Handle custom file filter errors
+  if (err.message && err.message.startsWith('Unsupported file type')) {
+    res.status(400).json({
+      success: false,
+      error: err.message
     });
     return;
   }

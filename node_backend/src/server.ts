@@ -5,6 +5,7 @@ import { SessionStore } from './modules/memory/session.store.js';
 import { ConversationMemoryService } from './modules/memory/memory.service.js';
 import { healthRouter } from './routes/health.routes.js';
 import { createSessionRouter } from './routes/session.routes.js';
+import { createDocumentRouter } from './routes/document.routes.js';
 import { errorHandler } from './middlewares/error.middleware.js';
 
 const app = express();
@@ -21,6 +22,7 @@ export const memoryService = new ConversationMemoryService(sessionStore);
 // API Routes
 app.use('/api', healthRouter);
 app.use('/api', createSessionRouter(memoryService));
+app.use('/api', createDocumentRouter(memoryService));
 
 // Global Error Handler
 app.use(errorHandler);
